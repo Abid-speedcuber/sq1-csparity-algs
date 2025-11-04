@@ -178,7 +178,7 @@ function generateNextScrambleData() {
             try {
                 const state = parseHexFormat(hexCode);
                 const notation = window.sq1Tools.scrambleFromState(state) || hexCode;
-                scrambleImage = visualizeFromScrambleNotationPlease(notation, 200, colorScheme);
+                scrambleImage = visualizeFromScrambleNotationPlease(notation, scrambleImageSize, colorScheme);
             } catch (e) {
                 console.error('Error with new visualizer:', e);
                 scrambleImage = generateScrambleSVGFromHex(hexCode);
