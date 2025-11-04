@@ -12,6 +12,7 @@
     <meta name="theme-color" content="#007bff">
     <title>Square-1 Cubeshape Parity</title>
     <link rel="stylesheet" href="src/css/styles.css">
+    <link rel="stylesheet" href="src/css/training-modal.css">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="apple-touch-icon" href="src/media/icon-192.png">
 </head>
@@ -113,6 +114,7 @@
             
 
             <div style="margin-top: 20px;">
+                <button onclick="openColorSchemeModal()" style="padding: 8px 16px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; width: 100%; margin-bottom: 10px;">Color Scheme Settings</button>
                 <button onclick="openCaseNameModal()" style="padding: 8px 16px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; width: 100%; margin-bottom: 10px;">Case Name Settings</button>
                 <button onclick="openParityOrientationModal()" style="padding: 8px 16px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; width: 100%; margin-bottom: 10px;">Parity Orientation Settings</button>
                 
@@ -188,23 +190,6 @@
     </div>
 </div>
 
-<div id="trainingModal" class="modal" style="height: 100vh; width: 100vw;">
-    <div class="modal-content" style="max-width: 100%; margin-top: 0px;">
-        <div class="modal-header">
-            <span class="modal-title" id="trainingCaseName">Training: Case Name</span>
-            <button class="close-btn" onclick="closeTrainingModal()">&times;</button>
-        </div>
-        <div class="training-modal-body" style="text-align: center; padding: 4px; height: 100vh; user-select: none;">
-            <div style="margin-bottom: 0px; display: flex; align-items: center; justify-content: center; gap: 10px;">
-                <div style="font-size: 1rem; font-weight: 500; color: black; font-family: Consolas, monospace; padding: 10px 15px; background: #f8f9fa; border-radius: 8px; word-wrap: break-word; max-width: 100%; overflow-wrap: break-word; cursor: pointer; flex: 1;" id="trainingScramble" onclick="copyScrambleToClipboard()" title="Click to copy scramble">Loading...</div>
-                <button onclick="event.stopPropagation(); nextScrambleManual();" style="padding: 10px 20px; font-size: 1rem; background: #007bff; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; white-space: nowrap;">Next</button>
-            </div>
-            <div id="trainingScrambleImage" style="margin-bottom: 20px; display: flex; justify-content: center; cursor: pointer; transition: background 0.15s;" onmousedown="handleImageMouseDown()" onmouseup="handleImageMouseUp()" onmouseleave="handleImageMouseLeave()" ontouchstart="handleImageTouchStart(event)" ontouchend="handleImageTouchEnd(event)"></div>
-            <div style="font-size: 3rem; font-weight: 600; color: #2d3748; font-family: monospace; letter-spacing: 2px; cursor: pointer; transition: all 0.15s; height:100vh;" id="trainingTimer" onmousedown="handleTimerMouseDown()" onmouseup="handleTimerMouseUp()" onmouseleave="handleTimerMouseLeave()" ontouchstart="handleTimerTouchStart(event)" ontouchend="handleTimerTouchEnd(event)">0.000</div>
-        </div>
-    </div>
-</div>
-
     <div id="parityOrientationModal" class="modal">
     <div class="modal-content" style="max-width: 900px; margin-top: 50px;">
         <div class="modal-header">
@@ -218,6 +203,81 @@
             <div style="margin-top: 20px; text-align: center;">
                 <button onclick="saveParityOrientations()" style="padding: 10px 30px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; font-weight: 600;">Save All Changes</button>
                 <button onclick="resetAllParityOrientations()" style="padding: 10px 30px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; font-weight: 600; margin-left: 10px;">Reset All to Default</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="colorSchemeModal" class="modal">
+    <div class="modal-content" style="max-width: 500px; margin-top: 50px;">
+        <div class="modal-header">
+            <span class="modal-title">Color Scheme Settings</span>
+            <button class="close-btn" onclick="closeColorSchemeModal()">&times;</button>
+        </div>
+        <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 8px;">Top Color:</label>
+                <div style="display: flex; gap: 10px;">
+                    <button class="color-btn" data-face="top" data-color="#FFFF00" style="background: #FFFF00; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">Yellow</button>
+                    <button class="color-btn" data-face="top" data-color="#000000" style="background: #000000; color: white; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">Black</button>
+                    <button class="color-btn" data-face="top" data-color="#FFFFFF" style="background: #FFFFFF; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">White</button>
+                </div>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 8px;">Bottom Color:</label>
+                <div style="display: flex; gap: 10px;">
+                    <button class="color-btn" data-face="bottom" data-color="#FFFF00" style="background: #FFFF00; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">Yellow</button>
+                    <button class="color-btn" data-face="bottom" data-color="#000000" style="background: #000000; color: white; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">Black</button>
+                    <button class="color-btn" data-face="bottom" data-color="#FFFFFF" style="background: #FFFFFF; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">White</button>
+                </div>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 8px;">Front Color:</label>
+                <div style="display: flex; gap: 10px;">
+                    <button class="color-btn" data-face="front" data-color="#CC0000" style="background: #CC0000; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">Red</button>
+                    <button class="color-btn" data-face="front" data-color="#00AA00" style="background: #00AA00; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">Green</button>
+                    <button class="color-btn" data-face="front" data-color="#0066CC" style="background: #0066CC; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">Blue</button>
+                    <button class="color-btn" data-face="front" data-color="#FF8C00" style="background: #FF8C00; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">Orange</button>
+                </div>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 8px;">Right Color:</label>
+                <div style="display: flex; gap: 10px;">
+                    <button class="color-btn" data-face="right" data-color="#CC0000" style="background: #CC0000; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">Red</button>
+                    <button class="color-btn" data-face="right" data-color="#00AA00" style="background: #00AA00; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">Green</button>
+                    <button class="color-btn" data-face="right" data-color="#0066CC" style="background: #0066CC; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">Blue</button>
+                    <button class="color-btn" data-face="right" data-color="#FF8C00" style="background: #FF8C00; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">Orange</button>
+                </div>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 8px;">Back Color:</label>
+                <div style="display: flex; gap: 10px;">
+                    <button class="color-btn" data-face="back" data-color="#CC0000" style="background: #CC0000; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">Red</button>
+                    <button class="color-btn" data-face="back" data-color="#00AA00" style="background: #00AA00; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">Green</button>
+                    <button class="color-btn" data-face="back" data-color="#0066CC" style="background: #0066CC; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">Blue</button>
+                    <button class="color-btn" data-face="back" data-color="#FF8C00" style="background: #FF8C00; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">Orange</button>
+                </div>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 8px;">Left Color:</label>
+                <div style="display: flex; gap: 10px;">
+                    <button class="color-btn" data-face="left" data-color="#CC0000" style="background: #CC0000; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">Red</button>
+                    <button class="color-btn" data-face="left" data-color="#00AA00" style="background: #00AA00; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">Green</button>
+                    <button class="color-btn" data-face="left" data-color="#0066CC" style="background: #0066CC; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">Blue</button>
+                    <button class="color-btn" data-face="left" data-color="#FF8C00" style="background: #FF8C00; width: 60px; height: 40px; border: 2px solid #ddd; border-radius: 4px; cursor: pointer;">Orange</button>
+                </div>
+            </div>
+            <div style="margin-bottom: 20px; margin-top: 20px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 8px;">Scramble Image Size: <span id="sizeValue">200</span>px</label>
+                <input type="range" id="imageSizeSlider" min="100" max="400" step="10" value="200" style="width: 100%; cursor: pointer;" oninput="updateImageSizePreview(this.value)">
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #666; margin-top: 5px;">
+                    <span>Small (100px)</span>
+                    <span>Large (400px)</span>
+                </div>
+            </div>
+            <div style="margin-top: 20px; text-align: center;">
+                <button onclick="saveColorScheme()" style="padding: 10px 30px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; font-weight: 600;">Save Color Scheme</button>
+                <button onclick="resetColorScheme()" style="padding: 10px 30px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; font-weight: 600; margin-left: 10px;">Reset to Default</button>
             </div>
         </div>
     </div>
@@ -359,7 +419,6 @@
   </div>
 </div>
 
-<!-- already separated -->
 <script src="src/js/svgs/svg.js"></script>
 <script src="src/js/lib/database/shapeIndex.js"></script>
 <script src="src/js/lib/database/algs.js"></script>
@@ -369,8 +428,225 @@
 <script src="src/js/display/rendering/scrambleFormatting.js"></script>
 <script src="src/js/js/constants-and-config.js"></script>
 
-<!--Needs to be separated-->
-<script src="src/js/js/state-management.js"></script>
+<script id="src/js/js/state-management.js">
+
+let filteredData = [...data];
+let learnedCases = new Set();
+let learningCases = new Set();
+let plannedCases = new Set();
+let swappedCases = new Map(); // stores {caseName: true/false}
+let comments = new Map(); // stores {caseName: "comment text"}
+let plannedLevels = new Map(); // stores {caseName: 1-6}
+let perCaseSwapLR = new Map(); // stores {caseName: true/false} for per-case L/R swap
+let parityOrientations = new Map(); // stores {shapePattern: rotationAmount}
+
+// User's saved preferences
+let caseNameSettings = new Map(); // Stores {shape: "SelectedName"}
+let customCaseNames = new Map();  // Stores {shape: "CustomText"}
+let swapShapeLR = new Map();      // Stores {shape: true/false} for swapping L/R at the base shape level
+let useDynamicParity = false;     // Toggle for dynamic parity determination
+let showPaths = false;        // Toggle for short Left/Right notation (L. /R. )
+let lrPosition = 'front';         // Position of L/R prefix: 'front' or 'back'
+let enablePriorityLearning = false; // Toggle for priority-based learning system
+// --- End New Case Name Settings ---
+let useShortLR = false;
+let showHints = localStorage.getItem('showHints') !== null ? localStorage.getItem('showHints') === 'true' : true; // Default to true
+let colorScheme = {
+    topColor: '#000000',
+    bottomColor: '#FFFFFF',
+    frontColor: '#CC0000',
+    rightColor: '#00AA00',
+    backColor: '#FF8C00',
+    leftColor: '#0066CC',
+    dividerColor: '#7a0000',
+    circleColor: 'transparent'
+};
+
+let scrambleImageSize = 200; // Default size
+
+// Check if this is first load BEFORE loading state
+const isFirstLoad = !localStorage.getItem('sq1-parity-progress');
+
+// Load saved state
+try {
+    const saved = localStorage.getItem('sq1-parity-progress');
+    if (saved) {
+        const state = JSON.parse(saved);
+        learnedCases = new Set(state.learned || []);
+        learningCases = new Set(state.learning || []);
+        plannedCases = new Set(state.planned || []);
+        swappedCases = new Map(Object.entries(state.swapped || {}));
+        comments = new Map(Object.entries(state.comments || {}));
+        plannedLevels = new Map(Object.entries(state.plannedLevels || {}));
+        perCaseSwapLR = new Map(Object.entries(state.perCaseSwapLR || {}));
+        parityOrientations = new Map(Object.entries(state.parityOrientations || {}));
+        // Load new name settings
+        caseNameSettings = new Map(Object.entries(state.caseNameSettings || {}));
+        customCaseNames = new Map(Object.entries(state.customCaseNames || {}));
+        swapShapeLR = new Map(Object.entries(state.swapShapeLR || {}));
+        useDynamicParity = state.useDynamicParity || false;
+        showPaths = state.showPaths || false;
+        useShortLR = state.useShortLR !== undefined ? state.useShortLR : true;
+        lrPosition = state.lrPosition || 'front';
+        enablePriorityLearning = state.enablePriorityLearning || false;
+        colorScheme = state.colorScheme || colorScheme;
+        scrambleImageSize = state.scrambleImageSize || 200;
+    }
+    
+    // Initialize all cases as planned with priority 4 (Normal) if not already set
+    data.forEach(item => {
+        if (!learnedCases.has(item.name) && !learningCases.has(item.name) && !plannedCases.has(item.name)) {
+            plannedCases.add(item.name);
+            plannedLevels.set(item.name, 4);
+        }
+        if (!plannedLevels.has(item.name) && plannedCases.has(item.name)) {
+            plannedLevels.set(item.name, 4);
+        }
+    });
+    saveState();
+} catch (e) {
+    console.error('Error loading saved state:', e);
+}
+
+
+// Set defaults if this is first load
+if (isFirstLoad) {
+    // Set showHints to true for first load
+    showHints = true;
+    localStorage.setItem('showHints', 'true');
+    // Default case name settings
+    caseNameSettings.set('Paired Edges', 'Pair');
+    caseNameSettings.set('Perpendicular Edges', 'L-Shape');
+    caseNameSettings.set('Parallel Edges', 'Line');
+    
+    // Default toggles
+    useShortLR = true;
+    lrPosition = 'front';
+    showPaths = true;
+    showHints = true;  // Changed to true for tracing guides
+    useDynamicParity = false;
+    enablePriorityLearning = false;
+    
+    // Default sort
+    sortSelect.value = 'probability';
+    
+    saveState();
+}
+
+// Apply case name defaults if not already set (for existing users too)
+if (!caseNameSettings.has('Paired Edges')) {
+    caseNameSettings.set('Paired Edges', 'Pair');
+}
+if (!caseNameSettings.has('Perpendicular Edges')) {
+    caseNameSettings.set('Perpendicular Edges', 'L-Shape');
+}
+if (!caseNameSettings.has('Parallel Edges')) {
+    caseNameSettings.set('Parallel Edges', 'Line');
+}
+
+function saveState() {
+    try {
+        localStorage.setItem('sq1-parity-progress', JSON.stringify({
+            learned: Array.from(learnedCases),
+            learning: Array.from(learningCases),
+            planned: Array.from(plannedCases),
+            swapped: Object.fromEntries(swappedCases),
+            comments: Object.fromEntries(comments),
+            plannedLevels: Object.fromEntries(plannedLevels),
+            perCaseSwapLR: Object.fromEntries(perCaseSwapLR),
+            parityOrientations: Object.fromEntries(parityOrientations),
+            // Save new name settings
+            caseNameSettings: Object.fromEntries(caseNameSettings),
+            customCaseNames: Object.fromEntries(customCaseNames),
+            swapShapeLR: Object.fromEntries(swapShapeLR),
+            useDynamicParity: useDynamicParity,
+            showPaths: showPaths,
+            useShortLR: useShortLR,
+            lrPosition: lrPosition,
+            enablePriorityLearning: enablePriorityLearning,
+            colorScheme: colorScheme,
+            scrambleImageSize: scrambleImageSize
+        }));
+    } catch (e) {
+        console.error('Error saving state:', e);
+    }
+}
+
+function exportData() {
+    const state = {
+        learned: Array.from(learnedCases),
+        learning: Array.from(learningCases),
+        planned: Array.from(plannedCases),
+        swapped: Object.fromEntries(swappedCases),
+        comments: Object.fromEntries(comments),
+        plannedLevels: Object.fromEntries(plannedLevels),
+        perCaseSwapLR: Object.fromEntries(perCaseSwapLR),
+        parityOrientations: Object.fromEntries(parityOrientations),
+        caseNameSettings: Object.fromEntries(caseNameSettings),
+        customCaseNames: Object.fromEntries(customCaseNames),
+        swapShapeLR: Object.fromEntries(swapShapeLR),
+        useDynamicParity: useDynamicParity,
+        showPaths: showPaths,
+        showHints: showHints,
+        colorScheme: colorScheme,
+            scrambleImageSize: scrambleImageSize
+    };
+    const dataStr = JSON.stringify(state, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'sq1-parity-progress.json';
+    link.click();
+    URL.revokeObjectURL(url);
+}
+
+function importData(jsonStr) {
+    try {
+        const state = JSON.parse(jsonStr);
+        learnedCases = new Set(state.learned || []);
+        learningCases = new Set(state.learning || []);
+        plannedCases = new Set(state.planned || []);
+        swappedCases = new Map(Object.entries(state.swapped || {}));
+        comments = new Map(Object.entries(state.comments || {}));
+        plannedLevels = new Map(Object.entries(state.plannedLevels || {}));
+        perCaseSwapLR = new Map(Object.entries(state.perCaseSwapLR || {}));
+        parityOrientations = new Map(Object.entries(state.parityOrientations || {}));
+        caseNameSettings = new Map(Object.entries(state.caseNameSettings || {}));
+        customCaseNames = new Map(Object.entries(state.customCaseNames || {}));
+        swapShapeLR = new Map(Object.entries(state.swapShapeLR || {}));
+        useDynamicParity = state.useDynamicParity || false;
+        showPaths = state.showPaths || false;
+        colorScheme = state.colorScheme || colorScheme;
+        if (state.showHints !== undefined) {
+            showHints = state.showHints;
+            localStorage.setItem('showHints', showHints);
+            applyHintVisibility();
+        }
+        saveState();
+        updateProgress();
+        render();
+        alert('Data imported successfully!');
+    } catch (e) {
+        alert('Error importing data: ' + e.message);
+    }
+}
+
+function handleFileImport(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => importData(e.target.result);
+    reader.readAsText(file);
+}
+
+// DOM element references
+const searchInput = document.getElementById('search');
+const sortSelect = document.getElementById('sort');
+const learnFilterSelect = document.getElementById('learnFilter');
+const grid = document.getElementById('grid');
+const progressText = document.getElementById('progress-text');
+const safetyText = document.getElementById('safety-text');
+
+</script>
 <script src="src/js/display/rendering/display-names.js"></script>
 <script src="src/js/display/rendering/algorithm-display.js"></script>
 <script src="src/js/display/rendering/search-and-filter.js"></script>
@@ -384,8 +660,198 @@
 <script src="src/js/display/modals/modal-parity-analysis.js"></script>
 <script src="src/js/display/modals/modal-info.js"></script>
 <script src="src/js/display/modals/training-modal.js"></script>
-<script src="src/js/js/global-event-handlers.js"></script>
-<script src="src/js/js/initialization.js"></script>
+<script id="src/js/js/global-event-handlers.js">
+
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+        closeModal();
+    }
+});
+
+// Drag and drop support
+document.body.addEventListener('dragover', (e) => {
+    e.preventDefault();
+});
+
+document.body.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const files = e.dataTransfer.files;
+    if (files.length > 0 && files[0].name.endsWith('.json')) {
+        handleFileImport(files[0]);
+    }
+});
+
+// Close modals when clicking outside
+window.onclick = function(event) {
+    const settingsModal = document.getElementById('settingsModal');
+    const caseNameModal = document.getElementById('caseNameModal');
+    const parityModal = document.getElementById('parityOrientationModal');
+    const parityAnalysisModal = document.getElementById('parityAnalysisModal');
+    const howToUseModal = document.getElementById('howToUseModal');
+    const suggestModal = document.getElementById('suggestModal');
+    const confessionModal = document.getElementById('confessionModal');
+    const colorSchemeModal = document.getElementById('colorSchemeModal');
+    const trainingModal = document.getElementById('trainingModal');
+    
+    if (event.target == settingsModal) {
+        closeSettingsModal();
+    }
+    if (event.target == caseNameModal) {
+        closeCaseNameModal();
+    }
+    if (event.target == parityModal) {
+        closeParityOrientationModal();
+    }
+    if (event.target == parityAnalysisModal) {
+        closeParityAnalysisModal();
+    }
+    if (event.target == colorSchemeModal) {
+        closeColorSchemeModal();
+    }
+    if (trainingModal && event.target == trainingModal) {
+        closeTrainingModal();
+    }
+    if (event.target == howToUseModal) {
+        closeHowToUseModal();
+    }
+    if (event.target == suggestModal) {
+        closeSuggestModal();
+    }
+    if (event.target == confessionModal) {
+        closeConfessionModal();
+    }
+}
+
+// Close modal if clicking outside the content
+window.onclick = function(event) {
+    if (event.target == settingsModal) {
+        closeSettingsModal();
+    }
+    if (event.target == caseNameModal) {
+        closeCaseNameModal();
+    }
+}
+
+// Handle back button navigation for mobile devices
+let backButtonHandlerActive = false;
+
+function setupBackButtonHandler() {
+    if (backButtonHandlerActive) return;
+    backButtonHandlerActive = true;
+    
+    // Push a dummy state to handle back button
+    window.history.pushState({ modal: false }, '');
+    
+    window.addEventListener('popstate', function(event) {
+        // Check if any modal is open
+        const openModals = [
+            document.getElementById('settingsModal'),
+            document.getElementById('caseNameModal'),
+            document.getElementById('parityOrientationModal'),
+            document.getElementById('parityAnalysisModal'),
+            document.getElementById('howToUseModal'),
+            document.getElementById('suggestModal'),
+            document.getElementById('confessionModal'),
+            document.getElementById('colorSchemeModal'),
+            document.getElementById('trainingModal'),
+            document.getElementById('shapeIndexSelectorModal')
+        ].filter(modal => modal && (modal.style.display === 'block' || modal.classList.contains('active')));
+        
+        if (openModals.length > 0) {
+            // Close the topmost modal
+            const topModal = openModals[openModals.length - 1];
+            
+            if (topModal.id === 'trainingModal') closeTrainingModal();
+            else if (topModal.id === 'settingsModal') closeSettingsModal();
+            else if (topModal.id === 'caseNameModal') closeCaseNameModal();
+            else if (topModal.id === 'parityOrientationModal') closeParityOrientationModal();
+            else if (topModal.id === 'parityAnalysisModal') closeParityAnalysisModal();
+            else if (topModal.id === 'colorSchemeModal') closeColorSchemeModal();
+            else if (topModal.id === 'howToUseModal') closeHowToUseModal();
+            else if (topModal.id === 'suggestModal') closeSuggestModal();
+            else if (topModal.id === 'confessionModal') closeConfessionModal();
+            else if (topModal.id === 'shapeIndexSelectorModal') closeShapeIndexSelector();
+            
+            // Push state again to keep the handler active
+            window.history.pushState({ modal: false }, '');
+        } else {
+            // No modals open, ask if user wants to exit
+            if (confirm('Do you want to exit the app?')) {
+                window.history.back(); // Actually go back (will close the tab/app)
+            } else {
+                // Stay on the page
+                window.history.pushState({ modal: false }, '');
+            }
+        }
+    });
+}
+
+// Setup back button handler on page load
+setupBackButtonHandler();
+
+</script>
+<script id="src/js/js/initialization.js">
+
+// Initialize priority option visibility
+const priorityOption = document.getElementById('sortPriority');
+if (priorityOption) {
+    priorityOption.style.display = enablePriorityLearning ? 'block' : 'none';
+}
+
+// Loading tips object
+const loadingTips = {
+    firstLoad: [
+        "Reading the 'How to Use' instructions can help you discover hidden features of the app.",
+    ],
+    general: [
+        "Happy Learning.",
+    ]
+};
+
+// Select and display a random tip
+const tipElement = document.createElement('p');
+tipElement.style.cssText = 'font-size: 0.95rem; color: #555; margin-top: 20px; max-width: 500px; text-align: center; line-height: 1.5;';
+const tips = isFirstLoad ? loadingTips.firstLoad : loadingTips.general;
+const randomTip = tips[Math.floor(Math.random() * tips.length)];
+tipElement.textContent = randomTip;
+document.getElementById('loadingScreen').appendChild(tipElement);
+
+// Loading screen progress simulation
+let loadProgress = 0;
+const progressBar = document.getElementById('loadingProgress');
+const loadingInterval = setInterval(() => {
+    loadProgress += Math.random() * 30;
+    if (loadProgress > 90) loadProgress = 90;
+    progressBar.style.width = loadProgress + '%';
+}, 100);
+
+updateProgress();
+filterAndSort();
+
+// Complete loading and show content
+window.addEventListener('load', async () => {
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    clearInterval(loadingInterval);
+    progressBar.style.width = '100%';
+    
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
+    document.getElementById('loadingScreen').style.opacity = '0';
+    document.querySelector('.container').style.opacity = '1';
+    
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    document.getElementById('loadingScreen').style.display = 'none';
+    
+    // Show how to use modal on first load - wait 1.5 seconds after everything is rendered
+    if (isFirstLoad) {
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        openHowToUseModal();
+    }
+});
+
+</script>
 <script>
 // Register service worker
 if ('serviceWorker' in navigator) {

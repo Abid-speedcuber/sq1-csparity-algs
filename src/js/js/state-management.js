@@ -19,6 +19,16 @@ let enablePriorityLearning = false; // Toggle for priority-based learning system
 // --- End New Case Name Settings ---
 let useShortLR = false;
 let showHints = localStorage.getItem('showHints') !== null ? localStorage.getItem('showHints') === 'true' : true; // Default to true
+let colorScheme = {
+    topColor: '#000000',
+    bottomColor: '#FFFFFF',
+    frontColor: '#CC0000',
+    rightColor: '#00AA00',
+    backColor: '#FF8C00',
+    leftColor: '#0066CC',
+    dividerColor: '#7a0000',
+    circleColor: 'transparent'
+};
 
 // Check if this is first load BEFORE loading state
 const isFirstLoad = !localStorage.getItem('sq1-parity-progress');
@@ -45,6 +55,7 @@ try {
         useShortLR = state.useShortLR !== undefined ? state.useShortLR : true;
         lrPosition = state.lrPosition || 'front';
         enablePriorityLearning = state.enablePriorityLearning || false;
+        colorScheme = state.colorScheme || colorScheme;
     }
     
     // Initialize all cases as planned with priority 4 (Normal) if not already set
@@ -117,7 +128,8 @@ function saveState() {
             showPaths: showPaths,
             useShortLR: useShortLR,
             lrPosition: lrPosition,
-            enablePriorityLearning: enablePriorityLearning
+            enablePriorityLearning: enablePriorityLearning,
+            colorScheme: colorScheme
         }));
     } catch (e) {
         console.error('Error saving state:', e);
@@ -139,7 +151,8 @@ function exportData() {
         swapShapeLR: Object.fromEntries(swapShapeLR),
         useDynamicParity: useDynamicParity,
         showPaths: showPaths,
-        showHints: showHints
+        showHints: showHints,
+        colorScheme: colorScheme
     };
     const dataStr = JSON.stringify(state, null, 2);
     const dataBlob = new Blob([dataStr], { type: 'application/json' });
@@ -167,6 +180,7 @@ function importData(jsonStr) {
         swapShapeLR = new Map(Object.entries(state.swapShapeLR || {}));
         useDynamicParity = state.useDynamicParity || false;
         showPaths = state.showPaths || false;
+        colorScheme = state.colorScheme || colorScheme;
         if (state.showHints !== undefined) {
             showHints = state.showHints;
             localStorage.setItem('showHints', showHints);

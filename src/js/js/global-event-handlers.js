@@ -23,10 +23,11 @@ window.onclick = function(event) {
     const caseNameModal = document.getElementById('caseNameModal');
     const parityModal = document.getElementById('parityOrientationModal');
     const parityAnalysisModal = document.getElementById('parityAnalysisModal');
-    const trainingModal = document.getElementById('trainingModal');
     const howToUseModal = document.getElementById('howToUseModal');
     const suggestModal = document.getElementById('suggestModal');
     const confessionModal = document.getElementById('confessionModal');
+    const colorSchemeModal = document.getElementById('colorSchemeModal');
+    const trainingModal = document.getElementById('trainingModal');
     
     if (event.target == settingsModal) {
         closeSettingsModal();
@@ -40,7 +41,10 @@ window.onclick = function(event) {
     if (event.target == parityAnalysisModal) {
         closeParityAnalysisModal();
     }
-    if (event.target == trainingModal) {
+    if (event.target == colorSchemeModal) {
+        closeColorSchemeModal();
+    }
+    if (trainingModal && event.target == trainingModal) {
         closeTrainingModal();
     }
     if (event.target == howToUseModal) {
