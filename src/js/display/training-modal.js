@@ -10,6 +10,8 @@ let isHolding = false;
 let preGeneratedScrambles = [];
 let currentScrambleText = '';
 let trainingModalElement = null;
+let scrambleHistory = [];
+let currentHistoryIndex = -1;
 
 // Create the training modal dynamically
 function createTrainingModal() {
@@ -22,6 +24,11 @@ function createTrainingModal() {
         <div class="training-modal-header">
             <button class="training-modal-title" id="trainingCaseName" style="background: none; border: none; cursor: pointer; padding: 0; font: inherit; text-align: left;" title="Click to select shape indices">Training: Case Name</button>
             <div style="display: flex; gap: 10px; align-items: center;">
+                <button class="training-modal-refresh" id="trainingPrevBtn" title="Previous scramble">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
                 <button class="training-modal-refresh" id="trainingRefreshBtn" title="Regenerate scramble">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
@@ -35,11 +42,11 @@ function createTrainingModal() {
                 </button>
             </div>
         </div>
-        <div class="training-modal-scramble" id="trainingScramble" title="Click to copy scramble">Loading...</div>
-        <div class="training-modal-image-container">
-            <div class="training-modal-image" id="trainingScrambleImage"></div>
-        </div>
+        <div class="training-modal-scramble" id="trainingScramble" title="Click to analyze parity">Loading...</div>
         <div class="training-modal-timer-zone" id="trainingTimerZone">
+            <div class="training-modal-image-container">
+                <div class="training-modal-image" id="trainingScrambleImage"></div>
+            </div>
             <div class="training-modal-timer" id="trainingTimer">0.000</div>
         </div>
     `;
@@ -53,12 +60,20 @@ function createTrainingModal() {
         nextScrambleManual();
     });
     
+    document.getElementById('trainingPrevBtn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        previousScramble();
+    });
+    
     document.getElementById('trainingCloseBtn').addEventListener('click', (e) => {
         e.stopPropagation();
         closeTrainingModal();
     });
     
-    document.getElementById('trainingScramble').addEventListener('click', copyScrambleToClipboard);
+    document.getElementById('trainingScramble').addEventListener('click', (e) => {
+        e.stopPropagation();
+        openParityAnalysisFromTraining();
+    });
     
     document.getElementById('trainingCaseName').addEventListener('click', (e) => {
         e.stopPropagation();
@@ -85,6 +100,8 @@ function openTrainingModal(caseName) {
     
     currentTrainingCase = caseName;
     
+    pushModalState('trainingModal', closeTrainingModal);
+    
     // Find the original data item to get the canonical name
     const dataItem = data.find(d => d.name === caseName);
     if (!dataItem) {
@@ -92,7 +109,7 @@ function openTrainingModal(caseName) {
         return;
     }
     
-    // Use the canonical name from the data item to look up in shapeIndex array
+    // Use the canonical name from the data item to look up in shapeIndex
     const shapeIndexItem = shapeIndex.find(s => s.name === dataItem.name);
     if (!shapeIndexItem) {
         alert('Case not found in shape index.');
@@ -122,6 +139,8 @@ function openTrainingModal(caseName) {
     currentScrambleIndex = 0;
     preGeneratedScrambles = [];
     timerElapsed = 0;
+    scrambleHistory = [];
+    currentHistoryIndex = -1;
     
     // Pre-generate 3 scrambles
     for (let i = 0; i < 3; i++) {
@@ -203,12 +222,34 @@ function displayNextScramble() {
         currentScrambleText = scrambleData.text.replace(/<[^>]*>/g, ''); // Strip HTML for clipboard
         document.getElementById('trainingScramble').innerHTML = scrambleData.text;
         document.getElementById('trainingScrambleImage').innerHTML = scrambleData.image;
+        
+        // Add to history
+        scrambleHistory.push(scrambleData);
+        currentHistoryIndex = scrambleHistory.length - 1;
+        
+        // Limit history to 50 scrambles
+        if (scrambleHistory.length > 50) {
+            scrambleHistory.shift();
+            currentHistoryIndex--;
+        }
     }
     
     // Generate a new scramble to keep the queue full (async, won't block)
     setTimeout(() => {
         preGeneratedScrambles.push(generateNextScrambleData());
     }, 0);
+}
+
+function previousScramble() {
+    if (currentHistoryIndex <= 0) return; // No previous scramble
+    
+    stopTimerOnly();
+    currentHistoryIndex--;
+    
+    const scrambleData = scrambleHistory[currentHistoryIndex];
+    currentScrambleText = scrambleData.text.replace(/<[^>]*>/g, '');
+    document.getElementById('trainingScramble').innerHTML = scrambleData.text;
+    document.getElementById('trainingScrambleImage').innerHTML = scrambleData.image;
 }
 
 function nextScrambleManual() {
@@ -219,6 +260,33 @@ function nextScrambleManual() {
 function copyScrambleToClipboard() {
     navigator.clipboard.writeText(currentScrambleText).catch(err => {
         console.error('Failed to copy scramble:', err);
+    });
+}
+
+function openParityAnalysisFromTraining() {
+    // Strip HTML tags to get clean scramble text
+    const cleanScramble = currentScrambleText.replace(/<[^>]*>/g, '').trim();
+    
+    if (typeof window.ParityTracerLibrary === 'undefined') {
+        alert('Parity Tracer library not loaded');
+        return;
+    }
+    
+    window.ParityTracerLibrary.createModal({
+        backgroundColor: '#ffffff',
+        topColor: colorScheme.topColor,
+        topColorName: getColorName(colorScheme.topColor),
+        topColorShort: getColorName(colorScheme.topColor).charAt(0),
+        bottomColor: colorScheme.bottomColor,
+        bottomColorName: getColorName(colorScheme.bottomColor),
+        bottomColorShort: getColorName(colorScheme.bottomColor).charAt(0),
+        frontColor: colorScheme.frontColor,
+        rightColor: colorScheme.rightColor,
+        backColor: colorScheme.backColor,
+        leftColor: colorScheme.leftColor,
+        scrambleText: cleanScramble,
+        generateImage: true,
+        imageSize: scrambleImageSize || 200
     });
 }
 
@@ -304,6 +372,8 @@ function updateTimerDisplay() {
 function openShapeIndexSelector() {
     const shapeIndexItem = shapeIndex.find(s => s.name === currentTrainingCase);
     if (!shapeIndexItem) return;
+    
+    pushModalState('shapeIndexSelectorModal', closeShapeIndexSelector);
     
     // Create or get existing modal
     let selectorModal = document.getElementById('shapeIndexSelectorModal');
